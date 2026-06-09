@@ -19,7 +19,7 @@ namespace MyTFTEngine {
         glBindVertexArray(0);
     }
 
-    void VertexArray::AddVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer) {
+    void VertexArray::AddVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer) const {
         Bind();
         vertexBuffer->Bind();
 
