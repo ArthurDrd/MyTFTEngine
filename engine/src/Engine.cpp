@@ -2,6 +2,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include <Shader.h>
 
 namespace MyTFTEngine {
     Application::Application() : m_IsRunning(false), m_Window(nullptr) {}
@@ -15,7 +16,6 @@ namespace MyTFTEngine {
             return false;
         }
 
-        // Target OpenGL 4.5 Core Profile (standard for modern desktop custom engines)
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -46,20 +46,19 @@ namespace MyTFTEngine {
     void Application::Run() {
         std::cout << "[Engine] Entering Main Loop..." << std::endl;
 
+
+        Shader defaultShader("assets/shaders/default.vert", "assets/shaders/default.frag");
+
         // Keep running until the window is closed or m_IsRunning is flagged false
         while (m_IsRunning && !glfwWindowShouldClose(m_Window)) {
 
-            // 1. Clear Screen (TFT Board background color)
             glClearColor(0.12f, 0.15f, 0.22f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            // 2. TODO: Engine Updates (Input, Windows Events)
-            glfwPollEvents();
+            defaultShader.Bind();
 
-            // 3. TODO: Game Logic & Rendering Updates
-
-            // 4. Swap buffers to display what we just drew
             glfwSwapBuffers(m_Window);
+            glfwPollEvents();
         }
     }
 

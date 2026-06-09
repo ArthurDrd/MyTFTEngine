@@ -1,6 +1,6 @@
 #pragma once
 
-// Forward declaration of GLFWwindow so we don't pollute global scope
+// Forward declaration of GLFWwindow
 struct GLFWwindow;
 
 namespace MyTFTEngine {
