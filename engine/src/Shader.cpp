@@ -85,3 +85,4 @@ namespace MyTFTEngine {
 	void Shader::SetFloat(const std::string& name, float value) {
 		glUniform1f(glGetUniformLocation(m_RendererID, name.c_str()), value);
 	}
+}

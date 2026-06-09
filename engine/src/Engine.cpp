@@ -3,6 +3,9 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <Shader.h>
+#include <VertexArray.h>
+#include <Buffer.h>
+
 
 namespace MyTFTEngine {
     Application::Application() : m_IsRunning(false), m_Window(nullptr) {}
@@ -46,8 +49,26 @@ namespace MyTFTEngine {
     void Application::Run() {
         std::cout << "[Engine] Entering Main Loop..." << std::endl;
 
+        float vertices[] = {
+            -0.5f, -0.5f, 0.0f,  // Bas Gauche
+             0.5f, -0.5f, 0.0f,  // Bas Droite
+             0.5f,  0.5f, 0.0f,  // Haut Droite
+            -0.5f,  0.5f, 0.0f   // Haut Gauche
+        };
+
+        unsigned int indices[] = {
+            0, 1, 2,  // Premier triangle
+            2, 3, 0   // Deuxième triangle
+        };
 
         Shader defaultShader("assets/shaders/default.vert", "assets/shaders/default.frag");
+
+        auto va = std::make_shared<VertexArray>();
+        auto vb = std::make_shared<VertexBuffer>(vertices, sizeof(vertices));
+        auto ib = std::make_shared<IndexBuffer>(indices, 6);
+
+        va->AddVertexBuffer(vb);
+        va->SetIndexBuffer(ib);
 
         // Keep running until the window is closed or m_IsRunning is flagged false
         while (m_IsRunning && !glfwWindowShouldClose(m_Window)) {
@@ -56,6 +77,9 @@ namespace MyTFTEngine {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
             defaultShader.Bind();
+            va->Bind();
+
+            glDrawElements(GL_TRIANGLES, va->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
 
             glfwSwapBuffers(m_Window);
             glfwPollEvents();
