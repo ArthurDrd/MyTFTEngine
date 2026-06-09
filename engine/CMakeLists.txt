@@ -6,12 +6,16 @@
 set(ENGINE_HEADERS
     "include/Engine.h"
     "include/Shader.h"
+    "include/Buffer.h"
+    "include/VertexArray.h"
 )
 
 # Sources
 set(ENGINE_SOURCES
     "src/Engine.cpp"
     "src/Shader.cpp"
+    "src/Buffer.cpp"
+    "src/VertexArray.cpp"
 )
 
 # GLAD source file (since it's a single C file)
