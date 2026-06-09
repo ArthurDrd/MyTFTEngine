@@ -8,7 +8,7 @@ set(ENGINE_HEADERS
     "include/Shader.h"
     "include/Buffer.h"
     "include/VertexArray.h"
-)
+    "include/Renderer.h")
 
 # Sources
 set(ENGINE_SOURCES
@@ -16,7 +16,7 @@ set(ENGINE_SOURCES
     "src/Shader.cpp"
     "src/Buffer.cpp"
     "src/VertexArray.cpp"
-)
+    "src/Renderer.cpp")
 
 # GLAD source file (since it's a single C file)
 set(GLAD_SRC "${CMAKE_SOURCE_DIR}/externals/glad/src/glad.c")
