@@ -6,6 +6,9 @@
 #include <VertexArray.h>
 #include <Buffer.h>
 #include <Renderer.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
 
 namespace MyTFTEngine {
     Application::Application() : m_IsRunning(false), m_Window(nullptr) {}
@@ -72,11 +75,25 @@ namespace MyTFTEngine {
         va->SetIndexBuffer(ib);
 
         while (m_IsRunning && !glfwWindowShouldClose(m_Window)) {
-
             Renderer::Clear(0.12f, 0.15f, 0.22f, 1.0f);
 
-            glClearColor(0.12f, 0.15f, 0.22f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            defaultShader->Bind();
+
+            glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1280.0f / 720.0f, 0.1f, 100.0f);
+
+            glm::mat4 view = glm::lookAt(
+                glm::vec3(0.0f, 3.0f, 5.0f),
+                glm::vec3(0.0f, 0.0f, 0.0f),
+                glm::vec3(0.0f, 1.0f, 0.0f)
+            );
+
+            glm::mat4 viewProjection = projection * view;
+            defaultShader->SetMat4("u_ViewProjection", viewProjection);
+
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+
+            defaultShader->SetMat4("u_Model", model);
 
             Renderer::Draw(va, defaultShader);
 

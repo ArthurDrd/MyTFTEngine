@@ -34,6 +34,7 @@ target_include_directories(engine PRIVATE src)
 
 # Include external dependencies
 target_include_directories(engine PUBLIC "${CMAKE_SOURCE_DIR}/externals/glad/include")
+target_include_directories(engine PUBLIC "${CMAKE_SOURCE_DIR}/externals/glm")
 
 # GLFW provides its own target, so we just link it
 target_link_libraries(engine PUBLIC glfw)
