@@ -45,3 +45,4 @@ CMakeUserPresets.json
 *.vcxproj
 *.filters
 .idea/
+game/.DS_Store
