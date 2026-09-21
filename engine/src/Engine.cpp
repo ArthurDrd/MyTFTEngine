@@ -8,6 +8,7 @@
 #include <Renderer.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <imgui.h>
 
 
 namespace MyTFTEngine {
@@ -48,6 +49,8 @@ namespace MyTFTEngine {
 
         std::cout << "[Engine] OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
 
+        m_ImGuiLayer.Init(m_Window);
+
         m_IsRunning = true;
         return true;
     }
@@ -75,6 +78,10 @@ namespace MyTFTEngine {
         va->SetIndexBuffer(ib);
 
         while (m_IsRunning && !glfwWindowShouldClose(m_Window)) {
+            float time = (float)glfwGetTime();
+            Timestep timestep = time - m_LastFrameTime;
+            m_LastFrameTime = time;
+            
             Renderer::Clear(0.12f, 0.15f, 0.22f, 1.0f);
 
             defaultShader->Bind();
@@ -97,6 +104,48 @@ namespace MyTFTEngine {
 
             Renderer::Draw(va, defaultShader);
 
+            // IMGUI
+            m_ImGuiLayer.Begin();
+
+            ImGui::Begin("Engine Profiler");
+
+            static float frameCount = 0.0f;
+            static float timeAccumulator = 0.0f;
+            static float displayedFPS = 0.0f;
+            static float displayedFrameTime = 0.0f;
+
+            static float fpsHistory[50] = { 0 };
+            static int historyOffset = 0;
+
+            frameCount++;
+            timeAccumulator += timestep.GetSeconds();
+
+            if (timeAccumulator >= 0.2f) {
+                displayedFPS = frameCount / timeAccumulator;
+                displayedFrameTime = (timeAccumulator / frameCount) * 1000.0f;
+
+                // Mise à jour du tableau pour le graphique
+                fpsHistory[historyOffset] = displayedFPS;
+                historyOffset = (historyOffset + 1) % 50;
+
+                // Réinitialisation des compteurs
+                frameCount = 0.0f;
+                timeAccumulator = 0.0f;
+            }
+
+            ImGui::Text("FPS: %.0f", displayedFPS);
+            ImGui::Text("Frame Time: %.2f ms", displayedFrameTime);
+
+            ImGui::Spacing();
+
+            ImGui::PlotLines("FPS History", fpsHistory, 50, historyOffset, nullptr, 0.0f, 300.0f, ImVec2(0, 50));
+            
+            ImGui::Separator();
+            ImGui::Text("OpenGL: %s", glGetString(GL_VERSION));
+
+            ImGui::End();
+            m_ImGuiLayer.End();
+
             glfwSwapBuffers(m_Window);
             glfwPollEvents();
         }
@@ -104,6 +153,7 @@ namespace MyTFTEngine {
 
     void Application::Shutdown() {
         std::cout << "[Engine] Shutting down..." << std::endl;
+        m_ImGuiLayer.Shutdown();
         if (m_Window) {
             glfwDestroyWindow(m_Window);
         }
