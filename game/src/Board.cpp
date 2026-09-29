@@ -28,6 +28,9 @@ namespace MyTFTGame
 	}
     void Board::Render(const std::shared_ptr<MyTFTEngine::Shader>& shader)
     {
+        if (!shader) return;
+        shader->Bind();
+
 		float width = sqrt(3.0f) * m_HexRadius;
 		float height = 1.5f * m_HexRadius;
         
@@ -35,6 +38,12 @@ namespace MyTFTGame
 		float totalHeight = BOARD_HEIGHT * height;
         float centerOffsetX = -totalWidth * 0.5f + (width * 0.5f);
         float centerOffsetZ = -totalHeight * 0.5f + (height * 0.5f);
+
+        glm::vec4 colors[3] = {
+            glm::vec4(0.18f, 0.22f, 0.28f, 1.0f),
+            glm::vec4(0.25f, 0.30f, 0.38f, 1.0f),
+            glm::vec4(0.12f, 0.15f, 0.20f, 1.0f)
+        };
 
         for (int y = 0; y < BOARD_HEIGHT; ++y)
         {
@@ -45,6 +54,10 @@ namespace MyTFTGame
 
                 glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(xPos, 0.0f, zPos));
                 shader->SetMat4("u_Model", model);
+
+                int colorIndex = (x + y * 2) % 3;
+                shader->SetVec4("u_Color", colors[colorIndex]);
+
                 MyTFTEngine::Renderer::Draw(m_HexVao, shader);
             }
 		}

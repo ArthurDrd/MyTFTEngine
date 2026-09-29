@@ -17,7 +17,7 @@ namespace MyTFTGame
 		void Render(const std::shared_ptr<MyTFTEngine::Shader>& shader);
 
 	private:
-		static const int BOARD_WIDTH = 8;
+		static const int BOARD_WIDTH = 7;
 		static const int BOARD_HEIGHT = 4;
 
 		float m_HexRadius;

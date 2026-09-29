@@ -3,6 +3,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <glm/gtc/type_ptr.hpp>
 
 namespace MyTFTEngine {
 	Shader::Shader(const std::string& vertexPath, const std::string& fragmentPath) {
@@ -88,5 +89,16 @@ namespace MyTFTEngine {
 
 	void Shader::SetMat4(const std::string& name, const glm::mat4& matrix) {
 		glUniformMatrix4fv(glGetUniformLocation(m_RendererID, name.c_str()), 1, GL_FALSE, glm::value_ptr(matrix));
+	}
+
+	void Shader::SetVec4(const std::string& name, const glm::vec4& vector)
+	{
+		int location = glGetUniformLocation(m_RendererID, name.c_str());
+		if (location == -1) {
+			std::cerr << "[Shader Warning] Uniform '" << name << "' not found (Program ID: " << m_RendererID << ")!" << std::endl;
+		}
+		else {
+			glUniform4fv(location, 1, glm::value_ptr(vector));
+		}
 	}
 }
