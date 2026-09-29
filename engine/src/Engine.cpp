@@ -58,25 +58,8 @@ namespace MyTFTEngine {
     void Application::Run() {
         std::cout << "[Engine] Entering Main Loop..." << std::endl;
 
-        float vertices[] = {
-            -0.5f, -0.5f, 0.0f,  // Bas Gauche
-             0.5f, -0.5f, 0.0f,  // Bas Droite
-             0.5f,  0.5f, 0.0f,  // Haut Droite
-            -0.5f,  0.5f, 0.0f   // Haut Gauche
-        };
-
-        unsigned int indices[] = {
-            0, 1, 2,  // Premier triangle
-            2, 3, 0   // Deuxième triangle
-        };
-
         auto defaultShader = std::make_shared<Shader>("assets/shaders/default.vert", "assets/shaders/default.frag");
-        auto va = std::make_shared<VertexArray>();
-        auto vb = std::make_shared<VertexBuffer>(vertices, sizeof(vertices));
-        auto ib = std::make_shared<IndexBuffer>(indices, 6);
-        va->AddVertexBuffer(vb);
-        va->SetIndexBuffer(ib);
-
+       
         while (m_IsRunning && !glfwWindowShouldClose(m_Window)) {
             float time = (float)glfwGetTime();
             Timestep timestep = time - m_LastFrameTime;
@@ -89,8 +72,8 @@ namespace MyTFTEngine {
             glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1280.0f / 720.0f, 0.1f, 100.0f);
 
             glm::mat4 view = glm::lookAt(
-                glm::vec3(0.0f, 3.0f, 5.0f),
-                glm::vec3(0.0f, 0.0f, 0.0f),
+                glm::vec3(0.0f, 6.0f, 6.0f),
+                glm::vec3(0.0f, 1.0f, 0.0f),
                 glm::vec3(0.0f, 1.0f, 0.0f)
             );
 
@@ -98,11 +81,8 @@ namespace MyTFTEngine {
             defaultShader->SetMat4("u_ViewProjection", viewProjection);
 
             glm::mat4 model = glm::mat4(1.0f);
-            model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
             defaultShader->SetMat4("u_Model", model);
-
-            Renderer::Draw(va, defaultShader);
 
             // IMGUI
             m_ImGuiLayer.Begin();
