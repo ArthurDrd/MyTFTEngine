@@ -1,12 +1,14 @@
 #pragma once
 #include "Timestep.h"
 #include "ImGuiLayer.h"
-
+#include "Layer.h"
+#include "LayerStack.h"
 
 // Forward declaration of GLFWwindow
 struct GLFWwindow;
 
 namespace MyTFTEngine {
+    
     class Application {
     public:
         Application();
@@ -16,11 +18,16 @@ namespace MyTFTEngine {
         void Run();
         void Shutdown();
 
+        void PushLayer(Layer* layer);
+        void PushOverlay(Layer* overlay);
+
     private:
         bool m_IsRunning;
         GLFWwindow* m_Window = nullptr;
 
-        ImGuiLayer m_ImGuiLayer;
         float m_LastFrameTime = 0.0f;
+
+        LayerStack m_LayerStack;
+        ImGuiLayer* m_ImGuiLayer = nullptr;
     };
 }

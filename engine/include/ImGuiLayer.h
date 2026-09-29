@@ -1,19 +1,22 @@
 #pragma once
+#include <Layer.h>
 
 struct GLFWwindow;
 
 namespace MyTFTEngine {
 
-    class ImGuiLayer {
+    class ImGuiLayer : public Layer{
     public:
-        ImGuiLayer();
-        ~ImGuiLayer();
+        ImGuiLayer(GLFWwindow* window);
+        ~ImGuiLayer() override = default;
 
-        void Init(GLFWwindow* window);
-        void Shutdown();
+        void OnAttach() override;
+        void OnDetach() override;
+        void OnImGuiRender() override;
 
-        // Encadrement du rendu GUI
         void Begin();
         void End();
+    private:
+        GLFWwindow* m_WindowHandle;
     };
 }

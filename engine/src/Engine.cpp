@@ -2,13 +2,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
-#include <Shader.h>
-#include <VertexArray.h>
-#include <Buffer.h>
 #include <Renderer.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <imgui.h>
 
 
 namespace MyTFTEngine {
@@ -49,82 +43,44 @@ namespace MyTFTEngine {
 
         std::cout << "[Engine] OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
 
-        m_ImGuiLayer.Init(m_Window);
+        m_ImGuiLayer = new ImGuiLayer(m_Window);
+        PushOverlay(m_ImGuiLayer);
 
         m_IsRunning = true;
         return true;
     }
 
+    void Application::PushLayer(Layer* layer) {
+        m_LayerStack.PushLayer(layer);
+    }
+
+    void Application::PushOverlay(Layer* overlay) {
+        m_LayerStack.PushOverlay(overlay);
+    }
+
     void Application::Run() {
         std::cout << "[Engine] Entering Main Loop..." << std::endl;
-
-        auto defaultShader = std::make_shared<Shader>("assets/shaders/default.vert", "assets/shaders/default.frag");
        
         while (m_IsRunning && !glfwWindowShouldClose(m_Window)) {
             float time = (float)glfwGetTime();
             Timestep timestep = time - m_LastFrameTime;
             m_LastFrameTime = time;
             
-            Renderer::Clear(0.12f, 0.15f, 0.22f, 1.0f);
-
-            defaultShader->Bind();
-
-            glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1280.0f / 720.0f, 0.1f, 100.0f);
-
-            glm::mat4 view = glm::lookAt(
-                glm::vec3(0.0f, 6.0f, 6.0f),
-                glm::vec3(0.0f, 1.0f, 0.0f),
-                glm::vec3(0.0f, 1.0f, 0.0f)
-            );
-
-            glm::mat4 viewProjection = projection * view;
-            defaultShader->SetMat4("u_ViewProjection", viewProjection);
-
-            glm::mat4 model = glm::mat4(1.0f);
-
-            defaultShader->SetMat4("u_Model", model);
-
-            // IMGUI
-            m_ImGuiLayer.Begin();
-
-            ImGui::Begin("Engine Profiler");
-
-            static float frameCount = 0.0f;
-            static float timeAccumulator = 0.0f;
-            static float displayedFPS = 0.0f;
-            static float displayedFrameTime = 0.0f;
-
-            static float fpsHistory[50] = { 0 };
-            static int historyOffset = 0;
-
-            frameCount++;
-            timeAccumulator += timestep.GetSeconds();
-
-            if (timeAccumulator >= 0.2f) {
-                displayedFPS = frameCount / timeAccumulator;
-                displayedFrameTime = (timeAccumulator / frameCount) * 1000.0f;
-
-                // Mise à jour du tableau pour le graphique
-                fpsHistory[historyOffset] = displayedFPS;
-                historyOffset = (historyOffset + 1) % 50;
-
-                // Réinitialisation des compteurs
-                frameCount = 0.0f;
-                timeAccumulator = 0.0f;
+            for (Layer* layer : m_LayerStack) {
+                layer->OnUpdate(timestep);
             }
 
-            ImGui::Text("FPS: %.0f", displayedFPS);
-            ImGui::Text("Frame Time: %.2f ms", displayedFrameTime);
+            Renderer::Clear(0.12f, 0.15f, 0.22f, 1.0f);
 
-            ImGui::Spacing();
+            for (Layer* layer : m_LayerStack) {
+                layer->OnRender();
+            }
 
-            ImGui::PlotLines("FPS History", fpsHistory, 50, historyOffset, nullptr, 0.0f, 300.0f, ImVec2(0, 50));
-            
-            ImGui::Separator();
-            ImGui::Text("OpenGL: %s", glGetString(GL_VERSION));
-
-            ImGui::End();
-            m_ImGuiLayer.End();
+            m_ImGuiLayer->Begin();
+            for (Layer* layer : m_LayerStack) {
+                layer->OnImGuiRender();
+            }
+            m_ImGuiLayer->End();
 
             glfwSwapBuffers(m_Window);
             glfwPollEvents();
@@ -133,7 +89,6 @@ namespace MyTFTEngine {
 
     void Application::Shutdown() {
         std::cout << "[Engine] Shutting down..." << std::endl;
-        m_ImGuiLayer.Shutdown();
         if (m_Window) {
             glfwDestroyWindow(m_Window);
         }

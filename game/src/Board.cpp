@@ -1,4 +1,6 @@
 #include "Board.h"
+#include <HexMesh.h>
+#include <Renderer.h>
 
 namespace MyTFTGame
 {
@@ -11,6 +13,11 @@ namespace MyTFTGame
             hexMesh.GetVertices().data(),
             static_cast<unsigned int>(hexMesh.GetVertices().size() * sizeof(float))
         );
+        MyTFTEngine::BufferLayout layout = {
+        { MyTFTEngine::ShaderDataType::Float3, "a_Position" }
+            };
+        vb->SetLayout(layout);
+
         auto ib = std::make_shared<MyTFTEngine::IndexBuffer>(
             hexMesh.GetIndices().data(),
             static_cast<unsigned int>(hexMesh.GetIndices().size())
