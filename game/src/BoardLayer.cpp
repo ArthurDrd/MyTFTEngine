@@ -9,7 +9,7 @@ namespace MyTFTGame {
 
 	void BoardLayer::OnAttach()
 	{
-		m_Shader = std::make_shared<MyTFTEngine::Shader>("assets/shaders/default.vert", "assets/shaders/default.frag");
+		m_Shader = std::make_shared<MyTFTEngine::Shader>("assets/shaders/hex.vert", "assets/shaders/hex.frag");
 		m_Board = std::make_unique<Board>(0.5f);
 		
 	}
