@@ -1,6 +1,7 @@
 #include "Board.h"
 #include <HexMesh.h>
 #include <Renderer.h>
+#include <iostream>
 
 namespace MyTFTGame
 {
@@ -25,6 +26,28 @@ namespace MyTFTGame
 
         m_HexVao->AddVertexBuffer(vb);
         m_HexVao->SetIndexBuffer(ib);
+
+        float width = sqrt(3.0f) * m_HexRadius;
+        float height = 1.5f * m_HexRadius;
+
+        float totalWidth = BOARD_WIDTH * width;
+        float totalHeight = BOARD_HEIGHT * height;
+        float centerOffsetX = -totalWidth * 0.5f + (width * 0.5f);
+        float centerOffsetZ = -totalHeight * 0.5f + (height * 0.5f);
+
+        m_TileList.clear();
+
+        for (int y = 0; y < BOARD_HEIGHT; ++y)
+        {
+            for (int x = 0; x < BOARD_WIDTH; ++x)
+            {
+                float xPos = x * width + ((y % 2 != 0) ? (width * 0.5f) : 0.0f) + centerOffsetX;
+                float zPos = y * height + centerOffsetZ;
+
+                m_TileList.push_back(Tile{ y, x, glm::vec3(xPos, 0.0f, zPos), false });
+                std::cerr << "Tile " << y * BOARD_WIDTH + x << " created at (" << x << ", " << y << ") with world position (" << xPos << ", 0.0, " << zPos << ")" << std::endl;
+            }
+        }
 	}
     void Board::Render(const std::shared_ptr<MyTFTEngine::Shader>& shader)
     {
@@ -34,28 +57,13 @@ namespace MyTFTGame
         shader->SetVec4("u_FillColor", glm::vec4(0.1f, 0.4f, 0.8f, 0.15f));
         shader->SetVec4("u_BorderColor", glm::vec4(0.2f, 0.7f, 1.0f, 0.7f));
 
-		float width = sqrt(3.0f) * m_HexRadius;
-		float height = 1.5f * m_HexRadius;
-        
-		float totalWidth = BOARD_WIDTH * width;
-		float totalHeight = BOARD_HEIGHT * height;
-        float centerOffsetX = -totalWidth * 0.5f + (width * 0.5f);
-        float centerOffsetZ = -totalHeight * 0.5f + (height * 0.5f);
+        glm::vec4 borderColor = glm::vec4(1.0f, 0.9f, 0.2f, 1.0f);
 
-        glm::vec4 borderColor = glm::vec4(1.0f, 0.9f, 0.2f, 1.0f); // glm::vec4(0.2f, 0.6f, 1.0f, 0.6f)
+        for (const auto& tile : m_TileList) {
+			glm::mat4 model = glm::translate(glm::mat4(1.0f), tile.worldPosition);
+            shader->SetMat4("u_Model", model);
 
-        for (int y = 0; y < BOARD_HEIGHT; ++y)
-        {
-            for (int x = 0; x < BOARD_WIDTH; ++x)
-            {
-                float xPos = x * width + ((y % 2 != 0) ? (width * 0.5f) : 0.0f) + centerOffsetX;
-                float zPos = y * height + centerOffsetZ;
-
-                glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(xPos, 0.0f, zPos));
-                shader->SetMat4("u_Model", model);
-
-                MyTFTEngine::Renderer::Draw(m_HexVao, shader);
-            }
-		}
+            MyTFTEngine::Renderer::Draw(m_HexVao, shader);
+        }
     }
 }

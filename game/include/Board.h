@@ -7,6 +7,12 @@ namespace MyTFTEngine {
 	class Shader;
 }
 
+struct Tile {
+	int x, y;
+	glm::vec3 worldPosition;
+	bool isOccupied;
+};
+
 namespace MyTFTGame
 {
 	class Board {
@@ -22,5 +28,7 @@ namespace MyTFTGame
 
 		float m_HexRadius;
 		std::shared_ptr<MyTFTEngine::VertexArray> m_HexVao;
+		
+		std::vector<Tile> m_TileList;
 	};
 }
