@@ -1,18 +1,22 @@
-#include <Engine.h>
+#include <Application.h>
+#include "BoardLayer.h"
 #include <iostream>
 
 int main() {
     std::cout << "[Game] Starting Scuffed TFT..." << std::endl;
 
-    MyTFTEngine::Application application;
+    // Création de l'instance unique
+    MyTFTEngine::Application app;
 
-    if (application.Initialize()) {
-        application.Run();
-    }
-    else {
+    if (!app.Initialize()) {
         std::cerr << "[Game] Engine initialization failed! Aborting." << std::endl;
+        return -1;
     }
 
-    application.Shutdown();
+    app.PushLayer(new MyTFTGame::BoardLayer());
+
+    app.Run();
+    app.Shutdown();
+
     return 0;
 }

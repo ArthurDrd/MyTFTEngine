@@ -1,5 +1,4 @@
 #pragma once
-
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <string>
@@ -17,6 +16,7 @@ namespace MyTFTEngine {
 		void SetInt(const std::string& name, int value);
 		void SetFloat(const std::string& name, float value);
 		void SetMat4(const std::string& name, const glm::mat4& matrix);
+		void SetVec4(const std::string& name, const glm::vec4& vector);
 
 	private:
 		unsigned int m_RendererID;

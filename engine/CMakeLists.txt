@@ -4,24 +4,31 @@
 
 # Headers
 set(ENGINE_HEADERS
-    "include/Engine.h"
+    "include/Application.h"
     "include/Shader.h"
     "include/Buffer.h"
     "include/VertexArray.h"
     "include/Renderer.h"
     "include/Timestep.h"
     "include/ImGuiLayer.h"
-)
+    "include/Layer.h"
+    "include/LayerStack.h"
+    "include/Raycast.h"
+    "include/Input.h"
+    "include/Camera.h")
 
 # Sources
 set(ENGINE_SOURCES
-    "src/Engine.cpp"
+    "src/Application.cpp"
     "src/Shader.cpp"
     "src/Buffer.cpp"
     "src/VertexArray.cpp"
     "src/Renderer.cpp"
     "src/ImGuiLayer.cpp"
-)
+    "src/LayerStack.cpp"
+    "src/Raycast.cpp"
+    "src/Input.cpp"
+    "src/Camera.cpp")
 
 # GLAD source file (since it's a single C file)
 set(GLAD_SRC "${CMAKE_SOURCE_DIR}/externals/glad/src/glad.c")
@@ -58,4 +65,4 @@ target_include_directories(engine PUBLIC "${IMGUI_DIR}")
 target_include_directories(engine PUBLIC "${IMGUI_DIR}/backends")
 
 # GLFW provides its own target, so we just link it
-target_link_libraries(engine PUBLIC glfw)
+target_link_libraries(engine PUBLIC glfw opengl32)
