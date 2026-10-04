@@ -52,16 +52,27 @@ namespace MyTFTGame
     void Board::Render(const std::shared_ptr<MyTFTEngine::Shader>& shader)
     {
         shader->SetFloat("u_HexRadius", m_HexRadius);
-        shader->SetFloat("u_BorderThickness", 0.15f);
-
-        shader->SetVec4("u_FillColor", glm::vec4(0.1f, 0.4f, 0.8f, 0.15f));
-        shader->SetVec4("u_BorderColor", glm::vec4(0.2f, 0.7f, 1.0f, 0.7f));
-
-        glm::vec4 borderColor = glm::vec4(1.0f, 0.9f, 0.2f, 1.0f);
-
+     
         for (const auto& tile : m_TileList) {
-			glm::mat4 model = glm::translate(glm::mat4(1.0f), tile.worldPosition);
-            shader->SetMat4("u_Model", model);
+            bool isHovered = (&tile == m_HoveredTile);
+            
+            float borderThickness = isHovered ? 0.35f : 0.12f;
+            
+            glm::vec4 fillColor = isHovered
+                ? glm::vec4(1.0f, 0.9f, 0.2f, 0.25f)
+                : glm::vec4(0.1f, 0.4f, 0.8f, 0.15f);
+            
+            glm::vec4 borderColor = isHovered
+                ? glm::vec4(1.0f, 0.9f, 0.2f, 1.0f)
+                : glm::vec4(0.2f, 0.7f, 1.0f, 0.7f);
+
+
+            shader->SetFloat("u_BorderThickness", borderThickness);
+            shader->SetVec4("u_FillColor", fillColor);
+            shader->SetVec4("u_BorderColor", borderColor);
+
+            glm::mat4 model = glm::translate(glm::mat4(1.0f), tile.worldPosition);
+            shader->SetMat4("u_Model", model);;
 
             MyTFTEngine::Renderer::Draw(m_HexVao, shader);
         }
