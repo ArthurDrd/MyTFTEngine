@@ -6,7 +6,7 @@ int main() {
     std::cout << "[Game] Starting Scuffed TFT..." << std::endl;
 
     // Création de l'instance unique
-    auto& app = MyTFTEngine::Application::Get();
+    MyTFTEngine::Application app;
 
     if (!app.Initialize()) {
         std::cerr << "[Game] Engine initialization failed! Aborting." << std::endl;
