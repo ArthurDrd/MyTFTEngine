@@ -1,4 +1,4 @@
-#include "Engine.h"
+#include "Application.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
@@ -6,8 +6,20 @@
 
 
 namespace MyTFTEngine {
-    Application::Application() : m_IsRunning(false), m_Window(nullptr) {}
-    Application::~Application() {}
+    Application* Application::s_Instance = nullptr;
+    
+   Application::Application() : m_IsRunning(false), m_Window(nullptr) {
+        // Assertion pour vérifier qu'on ne crée pas deux Application
+        if (!s_Instance) {
+            s_Instance = this;
+        } else {
+            std::cerr << "[Engine Error] Application already exists!" << std::endl;
+        }
+    }
+
+    Application::~Application() {
+        s_Instance = nullptr;
+    }
 
     bool Application::Initialize() {
         std::cout << "[Engine] Initializing subsystems..." << std::endl;
@@ -56,6 +68,12 @@ namespace MyTFTEngine {
 
     void Application::PushOverlay(Layer* overlay) {
         m_LayerStack.PushOverlay(overlay);
+    }
+
+    glm::vec2 Application::GetWindowSize() const {
+        int width, height;
+        glfwGetWindowSize(m_Window, &width, &height);
+        return { static_cast<float>(width), static_cast<float>(height) };
     }
 
     void Application::Run() {

@@ -4,7 +4,7 @@
 
 # Headers
 set(ENGINE_HEADERS
-    "include/Engine.h"
+    "include/Application.h"
     "include/Shader.h"
     "include/Buffer.h"
     "include/VertexArray.h"
@@ -13,18 +13,20 @@ set(ENGINE_HEADERS
     "include/ImGuiLayer.h"
     "include/Layer.h"
     "include/LayerStack.h"
-
- "include/Raycast.h")
+    "include/Raycast.h"
+    "include/Input.h")
 
 # Sources
 set(ENGINE_SOURCES
-    "src/Engine.cpp"
+    "src/Application.cpp"
     "src/Shader.cpp"
     "src/Buffer.cpp"
     "src/VertexArray.cpp"
     "src/Renderer.cpp"
     "src/ImGuiLayer.cpp"
-    "src/LayerStack.cpp" "src/Raycast.cpp")
+    "src/LayerStack.cpp"
+    "src/Raycast.cpp"
+    "src/Input.cpp")
 
 # GLAD source file (since it's a single C file)
 set(GLAD_SRC "${CMAKE_SOURCE_DIR}/externals/glad/src/glad.c")
