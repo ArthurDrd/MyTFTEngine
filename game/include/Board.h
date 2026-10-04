@@ -10,7 +10,8 @@ namespace MyTFTEngine {
 struct Tile {
 	int x, y;
 	glm::vec3 worldPosition;
-	bool isOccupied;
+	bool isOccupied = false;
+	bool isHovered = false;
 };
 
 namespace MyTFTGame
@@ -22,6 +23,7 @@ namespace MyTFTGame
 
 		void Render(const std::shared_ptr<MyTFTEngine::Shader>& shader);
 
+		const Tile* GetTileFromWorldPos(const glm::vec3& worldPos) const;
 	private:
 		static const int BOARD_WIDTH = 7;
 		static const int BOARD_HEIGHT = 4;

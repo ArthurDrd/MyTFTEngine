@@ -44,7 +44,7 @@ namespace MyTFTGame
                 float xPos = x * width + ((y % 2 != 0) ? (width * 0.5f) : 0.0f) + centerOffsetX;
                 float zPos = y * height + centerOffsetZ;
 
-                m_TileList.push_back(Tile{ y, x, glm::vec3(xPos, 0.0f, zPos), false });
+                m_TileList.push_back(Tile{ y, x, glm::vec3(xPos, 0.0f, zPos)});
                 std::cerr << "Tile " << y * BOARD_WIDTH + x << " created at (" << x << ", " << y << ") with world position (" << xPos << ", 0.0, " << zPos << ")" << std::endl;
             }
         }
@@ -65,5 +65,24 @@ namespace MyTFTGame
 
             MyTFTEngine::Renderer::Draw(m_HexVao, shader);
         }
+    }
+    const Tile* Board::GetTileFromWorldPos(const glm::vec3& worldPos) const
+    {
+        const Tile* closestTile = nullptr;
+        float minDistance = m_HexRadius;
+
+        for (const auto& tile : m_TileList) {
+            
+            float distance = glm::distance(
+                glm::vec2(tile.worldPosition.x, tile.worldPosition.z),
+                glm::vec2(worldPos.x, worldPos.z));
+
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestTile = &tile;
+            }
+        }
+
+        return closestTile;
     }
 }

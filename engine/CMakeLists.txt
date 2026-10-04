@@ -14,7 +14,7 @@ set(ENGINE_HEADERS
     "include/Layer.h"
     "include/LayerStack.h"
 
-)
+ "include/Raycast.h")
 
 # Sources
 set(ENGINE_SOURCES
@@ -24,7 +24,7 @@ set(ENGINE_SOURCES
     "src/VertexArray.cpp"
     "src/Renderer.cpp"
     "src/ImGuiLayer.cpp"
-    "src/LayerStack.cpp")
+    "src/LayerStack.cpp" "src/Raycast.cpp")
 
 # GLAD source file (since it's a single C file)
 set(GLAD_SRC "${CMAKE_SOURCE_DIR}/externals/glad/src/glad.c")
