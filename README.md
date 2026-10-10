@@ -9,7 +9,7 @@ This project is built using a strict decoupled architecture splitting the underl
 The project is structured into three strictly bounded layers:
 * **`engine/`**: Core engine subsystem (Windowing, OpenGL rendering abstractions, Input events, Delta-timing). Completely decoupled from game logic.
 * **`game/`**: Game-specific mechanics (TFT Board grid, Hex math, Champion state machines, Bench/Shop logic). Developed using the `MyTFTEngine` namespace.
-* **`externals/`**: Third-party libraries managed via modern CMake (`GLFW`, `GLAD`).
+* **`externals/`**: Third-party libraries managed via modern CMake (`GLFW`, `GLAD`, `GLM`, `IMGUI`).
 
 ## 🚀 Quick Start / How to Build
 
