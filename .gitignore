@@ -46,3 +46,4 @@ CMakeUserPresets.json
 *.filters
 .idea/
 game/.DS_Store
+.DS_Store
